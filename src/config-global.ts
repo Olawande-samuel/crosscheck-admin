@@ -13,7 +13,7 @@ export const CONFIG: ConfigValue = {
   appName: 'Crosscheck',
   appVersion: packageJson.version,
 };
-
+export const HOST_API_KEY = 'https://';
 // LAYOUT
 // ----------------------------------------------------------------------
 export const PATH_AFTER_LOGIN = '/dashboard';
