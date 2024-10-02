@@ -6,7 +6,7 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
-import { MainLayout } from 'src/layouts/main';
+import MainLayout from 'src/layouts/main/MainLayout';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------

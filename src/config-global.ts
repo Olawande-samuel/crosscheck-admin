@@ -16,6 +16,7 @@ export const CONFIG: ConfigValue = {
 
 // LAYOUT
 // ----------------------------------------------------------------------
+export const PATH_AFTER_LOGIN = '/dashboard';
 
 export const HEADER = {
   H_MOBILE: 64,

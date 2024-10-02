@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> {`Dashboard - ${CONFIG.appName}`}</title>
+        <title> {`Home - ${CONFIG.appName}`}</title>
         <meta name="description" content="" />
         <meta name="keywords" content="" />
       </Helmet>
