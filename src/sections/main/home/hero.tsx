@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // next
 import { m } from 'framer-motion';
 
@@ -22,6 +23,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
     imgUrl: '/assets/background/overlay_2.jpg',
   }),
   width: '100%',
+  height: '100vh',
 }));
 
 const StyledDescription = styled('div')(({ theme }) => ({
@@ -125,11 +127,10 @@ function Description() {
           <Stack alignItems="center" spacing={2}>
             <Button
               component={Link}
-              href="/"
+              href="/sign-up"
               color="inherit"
               size="large"
               variant="contained"
-              startIcon={<Iconify icon="eva:flash-fill" width={24} />}
               sx={{
                 bgcolor: 'text.primary',
                 color: (theme) => (theme.palette.mode === 'light' ? 'common.white' : 'grey.800'),

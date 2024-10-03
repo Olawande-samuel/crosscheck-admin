@@ -56,7 +56,7 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
 
           {isDesktop && <NavDesktop isOffset={isOffset} data={navConfig} />}
-          <Button variant="contained" target="_blank" rel="noopener" href="/">
+          <Button variant="contained" href="/sign-up">
             Get Started
           </Button>
           {!isDesktop && <NavMobile isOffset={isOffset} data={navConfig} />}

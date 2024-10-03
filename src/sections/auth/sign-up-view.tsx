@@ -15,17 +15,25 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function SignInView() {
+export function SignUpView() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = useCallback(() => {
-    router.push('/dashboard');
+    router.push('/');
   }, [router]);
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
+      <TextField
+        fullWidth
+        name="name"
+        label="Full name"
+        defaultValue=""
+        InputLabelProps={{ shrink: true }}
+        sx={{ mb: 3 }}
+      />
       <TextField
         fullWidth
         name="email"
@@ -34,10 +42,6 @@ export function SignInView() {
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
-      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
-        Forgot password?
-      </Link>
 
       <TextField
         fullWidth
@@ -66,7 +70,7 @@ export function SignInView() {
         variant="contained"
         onClick={handleSignIn}
       >
-        Sign in
+        Sign Up
       </LoadingButton>
     </Box>
   );
@@ -74,11 +78,11 @@ export function SignInView() {
   return (
     <>
       <Box gap={1.5} display="flex" flexDirection="column" alignItems="center" sx={{ mb: 5 }}>
-        <Typography variant="h5">Sign In</Typography>
+        <Typography variant="h5">Sign Up</Typography>
         <Typography variant="body2" color="text.secondary">
-          Don’t have an account?
-          <Link variant="subtitle2" href="/sign-up" sx={{ ml: 0.5 }}>
-            Get started
+          Already have an account?
+          <Link variant="subtitle2" href="/sign-in" sx={{ ml: 0.5 }}>
+            Sign In
           </Link>
         </Typography>
       </Box>

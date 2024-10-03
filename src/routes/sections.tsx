@@ -26,6 +26,7 @@ export const ManageInstitute = lazy(() => import('src/pages/dashboard/manage-ins
 export const ResetPassword = lazy(() => import('src/pages/dashboard/reset-password'));
 // OTHERS
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
+export const SignUpPage = lazy(() => import('src/pages/sign-up'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -81,6 +82,14 @@ export function Router() {
         { path: 'manage-institutes', element: <ManageInstitute /> },
         { path: 'reset-password', element: <ResetPassword /> },
       ],
+    },
+    {
+      path: 'sign-up',
+      element: (
+        <AuthLayout>
+          <SignUpPage />
+        </AuthLayout>
+      ),
     },
     {
       path: 'sign-in',
