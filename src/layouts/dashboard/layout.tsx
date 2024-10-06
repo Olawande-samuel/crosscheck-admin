@@ -41,7 +41,7 @@ function getRouteName(route: string) {
   }
 
   // Otherwise, return the last segment as the route name
-  return segments[segments.length - 1];
+  return segments[segments.length - 1].split('-').join(' ');
 }
 export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) {
   const theme = useTheme();
@@ -86,7 +86,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                   onClose={() => setNavOpen(false)}
                   workspaces={_workspaces}
                 />
-                <Typography sx={{ textTransform: 'capitalize' }}>
+                <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
                   {getRouteName(pathname)}
                 </Typography>
               </>

@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { UserView } from 'src/sections/dashboard/user/view';
+import { ManageAdminView } from 'src/sections/dashboard/manage-admin/view';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ export default function Page() {
       <Helmet>
         <title> {`Manage Admin - ${CONFIG.appName}`}</title>
       </Helmet>
-      <UserView />
+      <ManageAdminView />
     </>
   );
 }

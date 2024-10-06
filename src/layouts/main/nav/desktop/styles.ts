@@ -1,8 +1,9 @@
 // @mui
-import { styled, alpha } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import { Paper, ListSubheader, ListItemButton } from '@mui/material';
+
 //
-import { NavItemDesktopProps } from '../types';
+import type { NavItemDesktopProps } from '../types';
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +70,7 @@ export const ListItem = styled(ListItemButton, {
 // ----------------------------------------------------------------------
 
 export const StyledMenu = styled(Paper)(({ theme }) => ({
-  top: 72,
+  top: 75,
   left: 0,
   right: 0,
   margin: 'auto',
