@@ -49,13 +49,9 @@ export function Router() {
     {
       path: '/',
       element: (
-        // <DashboardLayout>
         <MainLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </MainLayout>
-        // </DashboardLayout>
       ),
       children: [
         { element: <HomePage />, index: true },

@@ -19,10 +19,10 @@ export type UserProps = {
   id: string;
   name: string;
   role: string;
-  status: string;
-  company: string;
   avatarUrl: string;
-  isVerified: boolean;
+  // status: string;
+  // company: string;
+  // isVerified: boolean;
 };
 
 type UserTableRowProps = {
@@ -56,21 +56,21 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        {/* <TableCell>{row.company}</TableCell> */}
 
         <TableCell>{row.role}</TableCell>
 
-        <TableCell align="center">
+        {/* <TableCell align="center">
           {row.isVerified ? (
             <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
           ) : (
             '-'
           )}
-        </TableCell>
+        </TableCell> */}
 
-        <TableCell>
+        {/* <TableCell>
           <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
-        </TableCell>
+        </TableCell> */}
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>

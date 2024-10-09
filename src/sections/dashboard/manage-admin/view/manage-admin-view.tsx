@@ -17,6 +17,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../user-table-row';
+import AdminFormialog from '../admin-form-dialog';
 import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
@@ -38,7 +39,14 @@ export function ManageAdminView() {
   });
 
   const notFound = !dataFiltered.length && !!filterName;
+  const [open, setOpen] = useState(false);
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
 
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
   return (
     <DashboardContent>
       <Box display="flex" alignItems="center" mt={5} mb={5}>
@@ -49,6 +57,7 @@ export function ManageAdminView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleOpenDialog}
         >
           Add User
         </Button>
@@ -81,10 +90,9 @@ export function ManageAdminView() {
                 }
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
                   { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  // { id: 'isVerified', label: 'Verified', align: 'center' },
+                  // { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
               />
@@ -124,6 +132,7 @@ export function ManageAdminView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+      <AdminFormialog open={open} onClose={handleCloseDialog} />
     </DashboardContent>
   );
 }
