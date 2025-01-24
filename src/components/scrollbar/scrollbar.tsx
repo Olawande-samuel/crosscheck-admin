@@ -24,6 +24,9 @@ export const Scrollbar = forwardRef<HTMLDivElement, ScrollbarProps>(
         flexDirection: 'column',
         '& .simplebar-wrapper': slotProps?.wrapper as React.CSSProperties,
         '& .simplebar-content-wrapper': slotProps?.contentWrapper as React.CSSProperties,
+        '& .simplebar-placeholder': {
+          height: 'auto !important',
+        },
         '& .simplebar-content': {
           ...(fillContent && {
             minHeight: 1,

@@ -1,8 +1,7 @@
 import * as Yup from 'yup';
-// form
 import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// form
 import { yupResolver } from '@hookform/resolvers/yup';
 
 // @mui
@@ -10,14 +9,20 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Stack } from '@mui/material';
 // utils
 
+import Api from '@/api';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 // components
-import { useSnackbar } from '../../../components/snackbar';
 import FormProvider, { RHFTextField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
-interface FormValuesProps extends Omit<any, 'avatarUrl'> {
-  avatarUrl: any | string | null;
+interface FormValuesProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 type Props = {
@@ -26,27 +31,23 @@ type Props = {
 };
 
 export default function NewEditAdminForm({ isEdit = false, currentUser }: Props) {
-  const navigate = useNavigate();
-
-  const { enqueueSnackbar } = useSnackbar();
-
+  const queryClient = useQueryClient();
   const NewUserSchema = Yup.object().shape({
-    first_name: Yup.string().required('First Name is required'),
-    last_name: Yup.string().required('Last Name is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    phone_number: Yup.string().required('Phone number is required'),
-    role: Yup.string().required('Role is required'),
+    password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      first_name: currentUser?.first_name || '',
-      last_name: currentUser?.last_name || '',
+      firstName: currentUser?.first_name || '',
+      lastName: currentUser?.last_name || '',
       email: currentUser?.email || '',
-      phone_number: currentUser?.phone_number || '',
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      role: currentUser?.role || '',
+      password: currentUser?.password || '',
+      // isVerified: currentUser?.isVerified || true,
+      // status: currentUser?.status,
+      // role: currentUser?.role || '',
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser]
@@ -73,15 +74,23 @@ export default function NewEditAdminForm({ isEdit = false, currentUser }: Props)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentUser]);
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: Api.signup,
+  });
+
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
-      console.log('DATA', data);
-    } catch (error) {
-      console.error(error);
-    }
+    const payload = { ...data, userType: 'admin' };
+    mutate(payload, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['get admins'] });
+        toast.success('user created successfully');
+        reset();
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -96,15 +105,14 @@ export default function NewEditAdminForm({ isEdit = false, currentUser }: Props)
           sm: 'repeat(2, 1fr)',
         }}
       >
-        <RHFTextField name="first_name" label="First Name" />
-        <RHFTextField name="last_name" label="Last Name" />
-        <RHFTextField name="email" label="Email Address" />
-        <RHFTextField name="phone_number" label="Phone Number" />
-        <RHFTextField name="role" label="Role" />
+        <RHFTextField name="firstName" label="First Name" disabled={isPending} />
+        <RHFTextField name="lastName" label="Last Name" disabled={isPending} />
+        <RHFTextField name="email" label="Email Address" disabled={isPending} />
+        <RHFTextField name="password" label="Password" disabled={isPending} />
       </Box>
 
       <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton type="submit" variant="contained" loading={isPending}>
           {!isEdit ? 'Create User' : 'Save Changes'}
         </LoadingButton>
       </Stack>

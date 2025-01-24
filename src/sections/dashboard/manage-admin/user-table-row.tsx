@@ -10,8 +10,9 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
+
+import DeleteAdminConfirmation from './DeleteAdminConfirmation';
 
 // ----------------------------------------------------------------------
 
@@ -24,13 +25,14 @@ export type UserProps = {
 };
 
 type UserTableRowProps = {
-  row: UserProps;
+  row: IAdmin;
   selected: boolean;
   onSelectRow: () => void;
 };
 
 export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -38,6 +40,9 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
+  }, []);
+  const handleModalClose = useCallback(() => {
+    setOpenModal(false);
   }, []);
 
   return (
@@ -49,14 +54,14 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <Avatar alt={row.firstName} src="" />
+            {`${row.firstName} ${row.lastName}`}
           </Box>
         </TableCell>
 
         {/* <TableCell>{row.company}</TableCell> */}
 
-        <TableCell>{row.role}</TableCell>
+        <TableCell>Admin</TableCell>
 
         {/* <TableCell align="center">
           {row.isVerified ? (
@@ -100,17 +105,18 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          {/* <MenuItem onClick={handleClosePopover}>
             <Iconify icon="solar:pen-bold" />
             Edit
-          </MenuItem>
+          </MenuItem> */}
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+          <MenuItem onClick={() => setOpenModal(true)} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
             Delete
           </MenuItem>
         </MenuList>
       </Popover>
+      <DeleteAdminConfirmation open={openModal} onClose={handleModalClose} id={row._id} />
     </>
   );
 }
