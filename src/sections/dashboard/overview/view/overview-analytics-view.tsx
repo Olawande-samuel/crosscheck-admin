@@ -1,22 +1,25 @@
+import useUser from '@/hooks/useUser';
+
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 import { fShortenNumber } from 'src/utils/format-number';
 
-import { _timeline } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
+import RecentPending from '../recent-pending';
+import RecentCompleted from '../recent-completed';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const { user } = useUser();
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Hi, Welcome back 👋
+        Hi {user?.firstName ?? ''}, Welcome back 👋
       </Typography>
 
       <Grid container spacing={3}>
@@ -133,10 +136,11 @@ export function OverviewAnalyticsView() {
         </Grid> */}
 
         <Grid xs={12} md={6} lg={6}>
-          <AnalyticsOrderTimeline title="Recent Pending" list={_timeline} />
+          {/* <AnalyticsOrderTimeline title="Recent Pending" list={_timeline} /> */}
+          <RecentPending />
         </Grid>
         <Grid xs={12} md={6} lg={6}>
-          <AnalyticsOrderTimeline title="Recent Completed" list={_timeline} />
+          <RecentCompleted />
         </Grid>
 
         <Grid xs={12} md={6} lg={6}>

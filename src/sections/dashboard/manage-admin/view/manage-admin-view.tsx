@@ -1,4 +1,7 @@
+import Api from '@/api';
+import { Loader } from 'lucide-react';
 import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -23,23 +25,26 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import type { UserProps } from '../user-table-row';
-
 // ----------------------------------------------------------------------
 
 export function ManageAdminView() {
   const table = useTable();
-
   const [filterName, setFilterName] = useState('');
+  const [open, setOpen] = useState(false);
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+  const { data, isLoading } = useQuery({
+    queryKey: ['get admins'],
+    queryFn: Api.getAdmins,
+  });
+
+  const dataFiltered: IAdmin[] = applyFilter({
+    inputData: data?.data.admins ?? [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
-  const [open, setOpen] = useState(false);
+
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -47,11 +52,12 @@ export function ManageAdminView() {
   const handleCloseDialog = () => {
     setOpen(false);
   };
+
   return (
     <DashboardContent>
       <Box display="flex" alignItems="center" mt={5} mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          User List
+          Admin List
         </Typography>
         <Button
           variant="contained"
@@ -72,65 +78,73 @@ export function ManageAdminView() {
             table.onResetPage();
           }}
         />
+        {isLoading ? (
+          <Loader className="animate-spin mx-auto my-10" />
+        ) : (
+          <>
+            <Scrollbar>
+              <TableContainer sx={{ overflow: 'unset' }}>
+                <Table sx={{ minWidth: 800 }}>
+                  <UserTableHead
+                    order={table.order}
+                    orderBy={table.orderBy}
+                    rowCount={(data?.data.admins ?? []).length}
+                    numSelected={table.selected.length}
+                    onSort={table.onSort}
+                    onSelectAllRows={(checked) =>
+                      table.onSelectAllRows(
+                        checked,
+                        (data?.data?.admins ?? []).map((user) => user._id)
+                      )
+                    }
+                    headLabel={[
+                      { id: 'name', label: 'Name' },
+                      { id: 'role', label: 'Role' },
+                      // { id: 'isVerified', label: 'Verified', align: 'center' },
+                      // { id: 'status', label: 'Status' },
+                      { id: '' },
+                    ]}
+                  />
+                  <TableBody>
+                    {dataFiltered
+                      .slice(
+                        table.page * table.rowsPerPage,
+                        table.page * table.rowsPerPage + table.rowsPerPage
+                      )
+                      .map((row) => (
+                        <UserTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                        />
+                      ))}
 
-        <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
-                order={table.order}
-                orderBy={table.orderBy}
-                rowCount={_users.length}
-                numSelected={table.selected.length}
-                onSort={table.onSort}
-                onSelectAllRows={(checked) =>
-                  table.onSelectAllRows(
-                    checked,
-                    _users.map((user) => user.id)
-                  )
-                }
-                headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'role', label: 'Role' },
-                  // { id: 'isVerified', label: 'Verified', align: 'center' },
-                  // { id: 'status', label: 'Status' },
-                  { id: '' },
-                ]}
-              />
-              <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                    <TableEmptyRows
+                      height={68}
+                      emptyRows={emptyRows(
+                        table.page,
+                        table.rowsPerPage,
+                        (data?.data?.admins ?? []).length
+                      )}
                     />
-                  ))}
 
-                <TableEmptyRows
-                  height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
-                />
-
-                {notFound && <TableNoData searchQuery={filterName} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Scrollbar>
-
-        <TablePagination
-          component="div"
-          page={table.page}
-          count={_users.length}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
-        />
+                    {notFound && <TableNoData searchQuery={filterName} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+            <TablePagination
+              component="div"
+              page={table.page}
+              count={(data?.data?.admins ?? []).length}
+              rowsPerPage={table.rowsPerPage}
+              onPageChange={table.onChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={table.onChangeRowsPerPage}
+            />
+          </>
+        )}
       </Card>
       <AdminFormialog open={open} onClose={handleCloseDialog} />
     </DashboardContent>

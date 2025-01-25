@@ -2,6 +2,7 @@
 build/*
 dist/*
 public/*
+src/components/ui
 **/out/*
 **/.next/*
 **/node_modules/*

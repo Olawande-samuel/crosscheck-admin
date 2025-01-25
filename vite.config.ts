@@ -3,8 +3,6 @@ import checker from 'vite-plugin-checker';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
-// ----------------------------------------------------------------------
-
 const PORT = 3039;
 
 export default defineConfig({
@@ -31,6 +29,10 @@ export default defineConfig({
       {
         find: /^src(.+)/,
         replacement: path.join(process.cwd(), 'src/$1'),
+      },
+      {
+        find: '@',
+        replacement: path.resolve(__dirname, './src'),
       },
     ],
   },

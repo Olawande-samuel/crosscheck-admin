@@ -2,6 +2,7 @@ import type { Theme, SxProps, Breakpoint } from '@mui/material/styles';
 
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import { Collapse } from '@mui/material';
@@ -120,6 +121,7 @@ export function NavMobile({
 
 export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
   const pathname = usePathname();
+  const navigate = useNavigate();
   return (
     <>
       <Logo />
@@ -158,7 +160,14 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
                 <Icon icon="solar:logout-3-broken" width="100%" height="100%" stroke="2.5" />
               </Box>
 
-              <Box component="span" flexGrow={1}>
+              <Box
+                component="span"
+                flexGrow={1}
+                onClick={() => {
+                  localStorage.clear();
+                  navigate('/sign-in', { replace: true });
+                }}
+              >
                 Logout
               </Box>
             </ListItemButton>

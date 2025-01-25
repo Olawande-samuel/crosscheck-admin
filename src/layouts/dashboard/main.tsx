@@ -3,8 +3,8 @@ import type { Breakpoint } from '@mui/material/styles';
 import type { ContainerProps } from '@mui/material/Container';
 
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
+import { useTheme } from '@mui/material/styles';
 
 import { layoutClasses } from 'src/layouts/classes';
 
@@ -19,6 +19,7 @@ export function Main({ children, sx, ...other }: BoxProps) {
         display: 'flex',
         flex: '1 1 auto',
         flexDirection: 'column',
+        overflowX: 'hidden',
         ...sx,
       }}
       {...other}

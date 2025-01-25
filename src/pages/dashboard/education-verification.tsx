@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-
-import { Stack, Typography } from '@mui/material';
+import EducationOrder from '@/sections/dashboard/education';
 
 import { CONFIG } from 'src/config-global';
 
@@ -12,9 +11,7 @@ export default function Page() {
       <Helmet>
         <title> {`Education Verification - ${CONFIG.appName}`}</title>
       </Helmet>
-      <Stack>
-        <Typography>Education Verification</Typography>
-      </Stack>
+      <EducationOrder />
     </>
   );
 }

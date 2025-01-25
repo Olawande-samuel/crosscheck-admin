@@ -1,4 +1,3 @@
-import { Label } from 'src/components/label';
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -23,11 +22,6 @@ export const navData = [
       { title: 'Identity Verification', path: '/dashboard/requests/identity-verification' },
       { title: 'Credit Check', path: '/dashboard/requests/credit-check' },
     ],
-    info: (
-      <Label color="error" variant="inverted">
-        +3
-      </Label>
-    ),
   },
   {
     title: 'History',

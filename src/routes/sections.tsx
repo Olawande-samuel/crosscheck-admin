@@ -8,6 +8,7 @@ import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
 import MainLayout from 'src/layouts/main/MainLayout';
 import { DashboardLayout } from 'src/layouts/dashboard';
+import PrivateRoute from '@/auth/PrivateRoute';
 
 // ----------------------------------------------------------------------
 // MAIN
@@ -61,11 +62,13 @@ export function Router() {
     {
       path: 'dashboard',
       element: (
-        <DashboardLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <PrivateRoute>
+          <DashboardLayout>
+            <Suspense fallback={renderFallback}>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </PrivateRoute>
       ),
       children: [
         { element: <Analytics />, index: true },

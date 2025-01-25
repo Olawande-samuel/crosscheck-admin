@@ -1,8 +1,11 @@
+import Api from '@/api';
 import * as Yup from 'yup';
-// form
-import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from 'sonner';
 // next
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+// form
+import { yupResolver } from '@hookform/resolvers/yup';
 
 // @mui
 import { LoadingButton } from '@mui/lab';
@@ -30,28 +33,34 @@ export default function ResetPasswordForm() {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = methods;
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: Api.forgotPassword,
+  });
+
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      sessionStorage.setItem('email-recovery', data.email);
-    } catch (error) {
-      console.error(error);
-    }
+    mutate(data, {
+      onSuccess: (res) => {
+        toast.success(res.data.message);
+        reset();
+        sessionStorage.setItem('email-recovery', data.email);
+      },
+    });
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <RHFTextField name="email" label="Email address" />
-
+      <RHFTextField name="email" label="Email address" disabled={isPending} />
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
-        loading={isSubmitting}
+        loading={isSubmitting || isPending}
         sx={{ mt: 3 }}
+        disabled={isSubmitting || isPending}
       >
         Send Request
       </LoadingButton>

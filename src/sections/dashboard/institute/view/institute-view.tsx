@@ -1,43 +1,68 @@
+import Api from '@/api';
+import { Loader } from 'lucide-react';
 import { useState, useCallback } from 'react';
+import { Iconify } from '@/components/iconify';
+import { useQuery } from '@tanstack/react-query';
+import { CountryDropdown } from 'react-country-region-selector';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import { Button } from '@mui/material';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
+import { emptyRows } from '../utils';
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../user-table-row';
 import { UserTableHead } from '../user-table-head';
+import AddInstituteModal from '../addInstituteModal';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
-
-import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
 export function InstituteView() {
   const table = useTable();
+  const [country, setCountry] = useState('');
+
+  const [open, setOpen] = useState(false);
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
-    comparator: getComparator(table.order, table.orderBy),
-    filterName,
+  const { data, isLoading } = useQuery({
+    queryKey: ['get institutions', country, filterName],
+    queryFn: () => Api.getInstitutions({ country, name: filterName }),
+    enabled: !!country || !!filterName,
   });
 
+  const dataFiltered: Institution[] = data?.data.institution.docs ?? [];
+  
+  // const dataFiltered: Institution[] = applyFilter({
+  //   inputData: data?.data.institution.docs ?? [],
+  //   comparator: getComparator(table.order, table.orderBy),
+  //   filterName,
+  // });
+
   const notFound = !dataFiltered.length && !!filterName;
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleEditDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
 
   return (
     <DashboardContent>
@@ -46,84 +71,112 @@ export function InstituteView() {
           Institute
         </Typography>
         <Button
+          onClick={handleOpenDialog}
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
         >
           New
         </Button>
+        <AddInstituteModal />
       </Box>
-
       <Card>
-        <UserTableToolbar
-          numSelected={table.selected.length}
-          filterName={filterName}
-          onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setFilterName(event.target.value);
-            table.onResetPage();
-          }}
-        />
+        <div className="my-4 flex justify-between gap-6 flex-wrap items-center ">
+          <UserTableToolbar
+            numSelected={table.selected.length}
+            filterName={filterName}
+            onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setFilterName(event.target.value);
+              table.onResetPage();
+            }}
+          />
+          <div className="flex flex-col px-6 md:basis-1/2">
+            <span className="sr-only">Country</span>
+            <CountryDropdown
+              name="destination"
+              id="destination"
+              className="destination-country border py-4 rounded-lg px-4 border-[#e5e7eb]"
+              valueType="full"
+              value={country}
+              onChange={(val) => {
+                setCountry(val);
+              }}
+            />
+          </div>
+        </div>
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
-                order={table.order}
-                orderBy={table.orderBy}
-                rowCount={_users.length}
-                numSelected={table.selected.length}
-                onSort={table.onSort}
-                onSelectAllRows={(checked) =>
-                  table.onSelectAllRows(
-                    checked,
-                    _users.map((user) => user.id)
-                  )
-                }
-                headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
-                  { id: '' },
-                ]}
-              />
-              <TableBody>
-                {dataFiltered
-                  .slice(
-                    table.page * table.rowsPerPage,
-                    table.page * table.rowsPerPage + table.rowsPerPage
-                  )
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
-                    />
-                  ))}
-
-                <TableEmptyRows
-                  height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+            {isLoading ? (
+              <div className="flex justify-center">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              <Table sx={{ minWidth: 800 }}>
+                <UserTableHead
+                  order={table.order}
+                  orderBy={table.orderBy}
+                  rowCount={data?.data?.institution?.docs?.length ?? 0}
+                  numSelected={table.selected.length}
+                  onSort={table.onSort}
+                  onSelectAllRows={(checked) =>
+                    table.onSelectAllRows(
+                      checked,
+                      (data?.data?.institution?.docs ?? [])?.map((user) => user._id)
+                    )
+                  }
+                  headLabel={[
+                    { id: 'name', label: 'Name' },
+                    { id: 'country', label: 'Country' },
+                    { id: 'institute_charge', label: 'Institute Charge' },
+                    { id: 'our_charge', label: 'Our Charge' },
+                    { id: 'transcript_fee', label: 'Transcript Fee' },
+                    { id: 'status', label: '' },
+                  ]}
                 />
+                <TableBody>
+                  {dataFiltered
+                    .slice(
+                      table.page * table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage
+                    )
+                    .map((row) => (
+                      <UserTableRow
+                        key={row._id}
+                        row={row}
+                        selected={table.selected.includes(row._id)}
+                        onSelectRow={() => table.onSelectRow(row._id)}
+                        handleEditDialog={handleEditDialog}
+                      />
+                    ))}
 
-                {notFound && <TableNoData searchQuery={filterName} />}
-              </TableBody>
-            </Table>
+                  <TableEmptyRows
+                    height={48}
+                    emptyRows={emptyRows(
+                      table.page,
+                      table.rowsPerPage,
+                      (data?.data?.institution?.docs ?? [])?.length
+                    )}
+                  />
+
+                  {notFound && <TableNoData searchQuery={filterName} />}
+                </TableBody>
+              </Table>
+            )}
           </TableContainer>
         </Scrollbar>
 
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={(data?.data?.institution?.docs ?? [])?.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+      <AddInstituteModal open={open} onClose={handleCloseDialog} />
     </DashboardContent>
   );
 }

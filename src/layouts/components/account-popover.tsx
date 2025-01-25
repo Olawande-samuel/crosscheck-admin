@@ -1,19 +1,21 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
+import useUser from '@/hooks/useUser';
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
-import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Popover from '@mui/material/Popover';
 import MenuList from '@mui/material/MenuList';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { useRouter, usePathname } from 'src/routes/hooks';
+import { usePathname } from 'src/routes/hooks';
 
 import { _myAccount } from 'src/_mock';
 
@@ -29,8 +31,9 @@ export type AccountPopoverProps = IconButtonProps & {
 };
 
 export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
 
+  const { user } = useUser();
   const pathname = usePathname();
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -46,9 +49,9 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   const handleClickItem = useCallback(
     (path: string) => {
       handleClosePopover();
-      router.push(path);
+      navigate(path);
     },
-    [handleClosePopover, router]
+    [handleClosePopover, navigate]
   );
 
   return (
@@ -67,18 +70,18 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         >
           <Avatar
             src={_myAccount.photoURL}
-            alt={_myAccount.displayName}
+            alt={user?.firstName ?? ''}
             sx={{ width: 1, height: 1 }}
           >
-            {_myAccount.displayName.charAt(0).toUpperCase()}
+            {`${user?.firstName.charAt(0).toUpperCase() ?? ''} ${user?.lastName.charAt(0).toUpperCase() ?? ''}`}
           </Avatar>
         </IconButton>
         <Box sx={{ p: 2, pl: 1, pb: 1 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {user?.email ?? ''}
           </Typography>
         </Box>
       </Stack>
@@ -143,7 +146,16 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+          <Button
+            fullWidth
+            color="error"
+            size="medium"
+            variant="text"
+            onClick={() => {
+              localStorage.clear();
+              navigate('/sign-in', { replace: true });
+            }}
+          >
             Logout
           </Button>
         </Box>
