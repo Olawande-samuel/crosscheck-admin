@@ -7,12 +7,12 @@ import ItemTable from '../overview/ItemTable';
 const tableHeader = [
   {
     id: 1,
-    label: 'Date',
+    label: 'Name',
     align: 'left' as const,
   },
   {
     id: 2,
-    label: 'Name',
+    label: 'Date',
   },
   {
     id: 3,

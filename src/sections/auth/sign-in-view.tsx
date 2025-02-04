@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import useUser from '@/hooks/useUser';
+import { handleError } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +50,6 @@ export function SignInView() {
   console.log(form.getValues());
 
   const handleSignIn = (val: FormType) => {
-    console.log(val);
     mutate(val, {
       onSuccess: (res) => {
         toast.success('Sign in successfully');
@@ -57,7 +57,7 @@ export function SignInView() {
         navigate('/dashboard');
       },
       onError: (error) => {
-        toast.error(error.message);
+        handleError(error);
       },
     });
   };

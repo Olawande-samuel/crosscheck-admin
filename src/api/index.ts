@@ -203,6 +203,33 @@ class API {
       return Promise.reject(error);
     }
   }
+
+  async getWeeklySignups(): Promise<AxiosResponse<any>> {
+    try {
+      const response = await authInstance.get(`/admins/getWeeklySignups`);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async getTranscriptStatistics(): Promise<AxiosResponse<any>> {
+    try {
+      const response = await authInstance.get(`/admins/getTranscriptStatistics`);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async getVerificationStatistics(): Promise<AxiosResponse<any>> {
+    try {
+      const response = await authInstance.get(`/admins/getVerificationStatistics`);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
 const Api = new API();
 export default Api;

@@ -1,4 +1,6 @@
+import Api from '@/api';
 import useUser from '@/hooks/useUser';
+import { useQueries } from '@tanstack/react-query';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
@@ -16,6 +18,24 @@ import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 
 export function OverviewAnalyticsView() {
   const { user } = useUser();
+  const queries = useQueries({
+    queries: [
+      {
+        queryKey: ['get weekly signups'],
+        queryFn: () => Api.getWeeklySignups(),
+      },
+      {
+        queryKey: ['get verification statistics'],
+        queryFn: () => Api.getVerificationStatistics(),
+      },
+      {
+        queryKey: ['get transcript statistics'],
+        queryFn: () => Api.getTranscriptStatistics(),
+      },
+    ],
+  });
+
+  console.log({ queries });
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
@@ -27,7 +47,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="New Transcript Orders"
             percent={2.6}
-            total={714000}
+            total={queries?.[2].data?.data.pendingTranscripts}
             icon={<img alt="icon" src="/assets/icons/glass/ic-glass-bag.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -40,7 +60,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="New Education Checks"
             percent={-0.1}
-            total={1352831}
+            total={queries?.[1].data?.data?.pendingVerifications ?? 0}
             icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -53,7 +73,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="Completed Transcript Requests"
             percent={2.8}
-            total={1723315}
+            total={queries?.[2].data?.data?.completedTranscripts ?? 0}
             icon={<img alt="icon" src="/assets/icons/glass/ic-glass-buy.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -66,7 +86,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="Completed Education Checks"
             percent={3.6}
-            total={234}
+            total={queries?.[1].data?.data?.completedVerifications ?? 0}
             icon={<img alt="icon" src="/assets/icons/glass/ic-transcript.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -150,7 +170,7 @@ export function OverviewAnalyticsView() {
               {
                 value: 'signups',
                 label: 'New signups this week',
-                total: `${fShortenNumber(323234)}`,
+                total: `${fShortenNumber(queries?.[0].data?.data.newSignups ?? 0)}`,
               },
               { value: 'earnings', label: 'Total Earinings', total: `₦${fShortenNumber(323234)}` },
             ]}

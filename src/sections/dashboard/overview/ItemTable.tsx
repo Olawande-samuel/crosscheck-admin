@@ -134,11 +134,11 @@ function ItemTable({ data, header }: { data: TableData[]; header: TableHeader[] 
             : data
           ).map((row) => (
             <TableRow key={String(row.id)}>
-              <TableCell component="th" scope="row">
-                {row.updatedAt ? new Date(row.updatedAt as string).toLocaleDateString() : ''}
-              </TableCell>
+              <TableCell
+                style={{ width: 160 }}
+              >{`${row.firstName ?? ''} ${row.lastName ?? ''}`}</TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {`${row.firstName ?? ''} ${row.lastName ?? ''}`}
+                {row.updatedAt ? new Date(row.updatedAt as string).toLocaleDateString() : ''}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {String(row.institution ?? '')}

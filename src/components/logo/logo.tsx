@@ -17,7 +17,7 @@ export type LogoProps = BoxProps & {
 
 export const Logo = forwardRef<HTMLDivElement, LogoProps>(
   ({ width, href = '/', height, disableLink = false, className, sx, ...other }, ref) => {
-    const fullLogo = <Box component="img" src="assets/images/logo/logo.png" height="100%" />;
+    const fullLogo = <Box component="img" src="/assets/images/logo/logo.png" height="100%" />;
 
     const baseSize = {
       width: width ?? 'auto',
